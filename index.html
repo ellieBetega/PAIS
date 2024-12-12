@@ -23,6 +23,9 @@
         .erro {
             color: #dc3545;
             margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8d7da;
         }
         .ponto-turistico {
             margin: 10px 0;
@@ -35,23 +38,34 @@
             height: auto;
             margin-bottom: 10px;
         }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="mb-4">Pontos Turísticos do Mundo</h1>
         
+        <div class="alert alert-info">
+            <h4>Como usar:</h4>
+            <p>1. Selecione um continente no primeiro campo</p>
+            <p>2. Escolha um país do continente selecionado</p>
+            <p>3. Por fim, selecione uma cidade para ver seus pontos turísticos</p>
+        </div>
+
         <div class="card mb-4">
             <div class="card-header">
                 <h2>Explorar Destinos Turísticos</h2>
             </div>
             <div class="card-body">
-                <p>Selecione a localização para descobrir pontos turísticos:</p>
+                <div id="erro" class="erro" style="display: none;"></div>
                 
                 <!-- Seleção de Continente -->
                 <div class="form-group">
                     <label for="continente">Continente:</label>
-                    <select class="form-control" id="continente" onchange="carregarPaises()">
+                    <select class="form-control" id="continente" required>
                         <option value="">Selecione um continente...</option>
                     </select>
                 </div>
@@ -59,17 +73,23 @@
                 <!-- Seleção de País -->
                 <div class="form-group">
                     <label for="pais">País:</label>
-                    <select class="form-control" id="pais" onchange="carregarCidades()">
+                    <select class="form-control" id="pais" required>
                         <option value="">Primeiro selecione um continente...</option>
                     </select>
                 </div>
 
-                <!-- Seleção de Cidade/Estado -->
+                <!-- Seleção de Cidade -->
                 <div class="form-group">
-                    <label for="cidade">Cidade/Estado:</label>
-                    <select class="form-control" id="cidade" onchange="mostrarPontosTuristicos()">
+                    <label for="cidade">Cidade:</label>
+                    <select class="form-control" id="cidade" required>
                         <option value="">Primeiro selecione um país...</option>
                     </select>
+                </div>
+
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
                 </div>
 
                 <div id="pontosTuristicos" class="resultado"></div>
@@ -78,284 +98,137 @@
     </div>
 
     <script>
-        // Base de dados simulada de pontos turísticos
-        const pontosTuristicosDB = {
-            'EUR': {
-                'França': {
-                    'Paris': [
-                        {
-                            nome: 'Torre Eiffel',
-                            descricao: 'Ícone mundial com 324 metros de altura, oferece vista panorâmica da cidade.',
-                            imagem: 'https://example.com/eiffel.jpg'
-                        },
-                        {
-                            nome: 'Museu do Louvre',
-                            descricao: 'O maior museu de arte do mundo e lar da Mona Lisa.',
-                            imagem: 'https://example.com/louvre.jpg'
-                        },
-                        {
-                            nome: 'Arco do Triunfo',
-                            descricao: 'Monumento histórico que homenageia os que lutaram pela França.',
-                            imagem: 'https://example.com/arcotriunfo.jpg'
-                        },
-                        {
-                            nome: 'Notre-Dame',
-                            descricao: 'Catedral histórica em estilo gótico do século XII.',
-                            imagem: 'https://example.com/notredame.jpg'
-                        }
-                    ],
-                    'Nice': [
-                        {
-                            nome: 'Promenade des Anglais',
-                            descricao: 'Famoso calçadão à beira-mar.',
-                            imagem: 'https://example.com/nice.jpg'
-                        },
-                        {
-                            nome: 'Vieux Nice',
-                            descricao: 'Centro histórico com arquitetura italiana e mercados locais.',
-                            imagem: 'https://example.com/vieuxnice.jpg'
-                        }
-                    ],
-                    'Lyon': [
-                        {
-                            nome: 'Basílica de Notre-Dame de Fourvière',
-                            descricao: 'Impressionante basílica com vista para toda a cidade.',
-                            imagem: 'https://example.com/fourviere.jpg'
-                        },
-                        {
-                            nome: 'Vieux Lyon',
-                            descricao: 'Bairro medieval com arquitetura renascentista.',
-                            imagem: 'https://example.com/vieuxlyon.jpg'
-                        }
-                    ]
-                },
-                'Itália': {
-                    'Roma': [
-                        {
-                            nome: 'Coliseu',
-                            descricao: 'Anfiteatro histórico no centro de Roma.',
-                            imagem: 'https://example.com/coliseu.jpg'
-                        },
-                        {
-                            nome: 'Vaticano',
-                            descricao: 'Sede da Igreja Católica e lar de importantes obras de arte.',
-                            imagem: 'https://example.com/vaticano.jpg'
-                        },
-                        {
-                            nome: 'Fontana di Trevi',
-                            descricao: 'A maior fonte barroca de Roma.',
-                            imagem: 'https://example.com/trevi.jpg'
-                        }
-                    ],
-                    'Veneza': [
-                        {
-                            nome: 'Praça São Marcos',
-                            descricao: 'Principal praça de Veneza com a Basílica de São Marcos.',
-                            imagem: 'https://example.com/sanmarco.jpg'
-                        },
-                        {
-                            nome: 'Grande Canal',
-                            descricao: 'Principal canal de Veneza com gôndolas tradicionais.',
-                            imagem: 'https://example.com/canal.jpg'
-                        }
-                    ],
-                    'Florença': [
-                        {
-                            nome: 'Duomo',
-                            descricao: 'Catedral com sua famosa cúpula vermelha.',
-                            imagem: 'https://example.com/duomo.jpg'
-                        },
-                        {
-                            nome: 'Galeria Uffizi',
-                            descricao: 'Um dos museus de arte mais importantes do mundo.',
-                            imagem: 'https://example.com/uffizi.jpg'
-                        }
-                    ]
+        async function buscarDadosAPI(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Erro na requisição: ${response.status}`);
                 }
-            },
-            'ASI': {
-                'China': {
-                    'Pequim': [
-                        {
-                            nome: 'Cidade Proibida',
-                            descricao: 'Palácio imperial chinês com 9.999 cômodos.',
-                            imagem: 'https://example.com/cidadeproibida.jpg'
-                        },
-                        {
-                            nome: 'Templo do Céu',
-                            descricao: 'Complexo de templos imperiais da dinastia Ming.',
-                            imagem: 'https://example.com/templodoceu.jpg'
-                        },
-                        {
-                            nome: 'Praça da Paz Celestial',
-                            descricao: 'Maior praça pública do mundo.',
-                            imagem: 'https://example.com/pracapaz.jpg'
-                        }
-                    ],
-                    'Xangai': [
-                        {
-                            nome: 'The Bund',
-                            descricao: 'Famoso calçadão à beira do rio com vista para arranha-céus.',
-                            imagem: 'https://example.com/bund.jpg'
-                        },
-                        {
-                            nome: 'Torre de Pérola Oriental',
-                            descricao: 'Torre de TV com observatório e restaurante giratório.',
-                            imagem: 'https://example.com/perola.jpg'
-                        }
-                    ],
-                    'Xi\'an': [
-                        {
-                            nome: 'Exército de Terracota',
-                            descricao: 'Antiga coleção de guerreiros e cavalos em terracota.',
-                            imagem: 'https://example.com/terracota.jpg'
-                        },
-                        {
-                            nome: 'Muralha da Cidade Antiga',
-                            descricao: 'Muralha histórica bem preservada com 14km de extensão.',
-                            imagem: 'https://example.com/muralhaxi.jpg'
-                        }
-                    ]
-                },
-                'Japão': {
-                    'Tóquio': [
-                        {
-                            nome: 'Torre de Tóquio',
-                            descricao: 'Torre de comunicação e observação inspirada na Torre Eiffel.',
-                            imagem: 'https://example.com/tokyotower.jpg'
-                        },
-                        {
-                            nome: 'Templo Senso-ji',
-                            descricao: 'O templo budista mais antigo de Tóquio.',
-                            imagem: 'https://example.com/sensoji.jpg'
-                        }
-                    ],
-                    'Quioto': [
-                        {
-                            nome: 'Templo Dourado',
-                            descricao: 'Pavilhão coberto com folhas de ouro puro.',
-                            imagem: 'https://example.com/kinkakuji.jpg'
-                        },
-                        {
-                            nome: 'Floresta de Bambu de Arashiyama',
-                            descricao: 'Famosa floresta de bambu com trilhas para caminhada.',
-                            imagem: 'https://example.com/bamboo.jpg'
-                        }
-                    ]
-                }
+                return await response.json();
+            } catch (erro) {
+                mostrarErro(`Erro ao carregar dados: ${erro.message}`);
+                return null;
             }
-        };
+        }
+
+        function mostrarErro(mensagem) {
+            const erro = document.getElementById('erro');
+            erro.textContent = mensagem;
+            erro.style.display = 'block';
+            setTimeout(() => {
+                erro.style.display = 'none';
+            }, 5000);
+        }
+
+        function mostrarLoading(mostrar) {
+            document.getElementById('loading').style.display = mostrar ? 'block' : 'none';
+        }
 
         async function carregarEstados() {
-            const selectContinente = document.getElementById('continente');
-            const continentes = [
-                {sigla: 'EUR', nome: 'Europa'},
-                {sigla: 'ASI', nome: 'Ásia'},
-                {sigla: 'AFR', nome: 'África'},
-                {sigla: 'AMN', nome: 'América do Norte'},
-                {sigla: 'AMS', nome: 'América do Sul'},
-                {sigla: 'OCE', nome: 'Oceania'}
-            ];
-            
-            continentes.forEach(continente => {
-                const option = document.createElement('option');
-                option.value = continente.sigla;
-                option.textContent = continente.nome;
-                selectContinente.appendChild(option);
-            });
+            try {
+                mostrarLoading(true);
+                // Simulando chamada à API de continentes
+                const continentes = await buscarDadosAPI('https://api.exemplo.com/continentes');
+                if (!continentes) return;
+
+                const selectContinente = document.getElementById('continente');
+                selectContinente.innerHTML = '<option value="">Selecione um continente...</option>';
+                
+                continentes.forEach(continente => {
+                    const option = document.createElement('option');
+                    option.value = continente.sigla;
+                    option.textContent = continente.nome;
+                    selectContinente.appendChild(option);
+                });
+            } catch (erro) {
+                mostrarErro('Erro ao carregar continentes');
+            } finally {
+                mostrarLoading(false);
+            }
         }
 
         async function carregarPaises() {
-            const selectContinente = document.getElementById('continente');
-            const selectPais = document.getElementById('pais');
-            const selectCidade = document.getElementById('cidade');
-            const pontosTuristicos = document.getElementById('pontosTuristicos');
-            const continente = selectContinente.value;
+            try {
+                const continente = document.getElementById('continente').value;
+                if (!continente) return;
 
-            pontosTuristicos.innerHTML = '';
-            selectPais.innerHTML = '<option value="">Selecione um país...</option>';
-            selectCidade.innerHTML = '<option value="">Primeiro selecione um país...</option>';
+                mostrarLoading(true);
+                // Simulando chamada à API de países
+                const paises = await buscarDadosAPI(`https://api.exemplo.com/paises/${continente}`);
+                if (!paises) return;
 
-            if (!continente) {
-                selectPais.innerHTML = '<option value="">Primeiro selecione um continente...</option>';
-                return;
+                const selectPais = document.getElementById('pais');
+                selectPais.innerHTML = '<option value="">Selecione um país...</option>';
+                
+                paises.forEach(pais => {
+                    const option = document.createElement('option');
+                    option.value = pais.id;
+                    option.textContent = pais.nome;
+                    selectPais.appendChild(option);
+                });
+            } catch (erro) {
+                mostrarErro('Erro ao carregar países');
+            } finally {
+                mostrarLoading(false);
             }
-
-            const paisesPorContinente = {
-                'EUR': ['França', 'Itália', 'Espanha', 'Alemanha', 'Portugal', 'Grécia', 'Reino Unido', 'Holanda'],
-                'ASI': ['China', 'Japão', 'Índia', 'Tailândia', 'Vietnã', 'Coreia do Sul', 'Singapura', 'Malásia'],
-                'AFR': ['Egito', 'África do Sul', 'Marrocos', 'Quênia', 'Tanzânia', 'Namíbia', 'Botsuana'],
-                'AMN': ['Estados Unidos', 'Canadá', 'México', 'Costa Rica', 'Cuba', 'Jamaica'],
-                'AMS': ['Brasil', 'Argentina', 'Peru', 'Chile', 'Colômbia', 'Equador', 'Uruguai'],
-                'OCE': ['Austrália', 'Nova Zelândia', 'Fiji', 'Polinésia Francesa']
-            };
-
-            const paises = paisesPorContinente[continente] || [];
-            paises.sort();
-
-            paises.forEach(pais => {
-                const option = document.createElement('option');
-                option.value = pais;
-                option.textContent = pais;
-                selectPais.appendChild(option);
-            });
         }
 
         async function carregarCidades() {
-            const continente = document.getElementById('continente').value;
-            const pais = document.getElementById('pais').value;
-            const selectCidade = document.getElementById('cidade');
-            const pontosTuristicos = document.getElementById('pontosTuristicos');
+            try {
+                const pais = document.getElementById('pais').value;
+                if (!pais) return;
 
-            pontosTuristicos.innerHTML = '';
-            selectCidade.innerHTML = '<option value="">Selecione uma cidade/estado...</option>';
+                mostrarLoading(true);
+                // Simulando chamada à API de cidades
+                const cidades = await buscarDadosAPI(`https://api.exemplo.com/cidades/${pais}`);
+                if (!cidades) return;
 
-            if (!pais) {
-                selectCidade.innerHTML = '<option value="">Primeiro selecione um país...</option>';
-                return;
+                const selectCidade = document.getElementById('cidade');
+                selectCidade.innerHTML = '<option value="">Selecione uma cidade...</option>';
+                
+                cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.id;
+                    option.textContent = cidade.nome;
+                    selectCidade.appendChild(option);
+                });
+            } catch (erro) {
+                mostrarErro('Erro ao carregar cidades');
+            } finally {
+                mostrarLoading(false);
             }
-
-            const cidadesDisponiveis = pontosTuristicosDB[continente]?.[pais] || {};
-            const cidades = Object.keys(cidadesDisponiveis);
-            cidades.sort();
-
-            cidades.forEach(cidade => {
-                const option = document.createElement('option');
-                option.value = cidade;
-                option.textContent = cidade;
-                selectCidade.appendChild(option);
-            });
         }
 
-        function mostrarPontosTuristicos() {
-            const continente = document.getElementById('continente').value;
-            const pais = document.getElementById('pais').value;
-            const cidade = document.getElementById('cidade').value;
-            const divPontosTuristicos = document.getElementById('pontosTuristicos');
+        // Event Listeners
+        document.getElementById('continente').addEventListener('change', carregarPaises);
+        document.getElementById('pais').addEventListener('change', carregarCidades);
+        document.getElementById('cidade').addEventListener('change', async () => {
+            try {
+                const cidade = document.getElementById('cidade').value;
+                if (!cidade) return;
 
-            divPontosTuristicos.innerHTML = '';
+                mostrarLoading(true);
+                // Simulando chamada à API de pontos turísticos
+                const pontos = await buscarDadosAPI(`https://api.exemplo.com/pontos-turisticos/${cidade}`);
+                if (!pontos) return;
 
-            if (!continente || !pais || !cidade) return;
-
-            const pontos = pontosTuristicosDB[continente]?.[pais]?.[cidade];
-
-            if (pontos && pontos.length > 0) {
+                const divPontosTuristicos = document.getElementById('pontosTuristicos');
                 divPontosTuristicos.innerHTML = `
-                    <h3>Pontos Turísticos em ${cidade}, ${pais}</h3>
-                    ${pontos.map(ponto => `
+                    <h3>Pontos Turísticos em ${pontos.cidade}</h3>
+                    ${pontos.items.map(ponto => `
                         <div class="ponto-turistico">
                             <h4>${ponto.nome}</h4>
                             <p>${ponto.descricao}</p>
+                            <img src="${ponto.imagem}" alt="${ponto.nome}" class="img-fluid">
                         </div>
                     `).join('')}
                 `;
-            } else {
-                divPontosTuristicos.innerHTML = `
-                    <p>Desculpe, ainda não temos informações sobre pontos turísticos em ${cidade}, ${pais}.</p>
-                    <p>Sugestões de busca: Tente Paris (França), Roma (Itália) ou Tóquio (Japão) para ver exemplos.</p>
-                `;
+            } catch (erro) {
+                mostrarErro('Erro ao carregar pontos turísticos');
+            } finally {
+                mostrarLoading(false);
             }
-        }
+        });
 
         // Inicializar a página
         window.onload = carregarEstados;
