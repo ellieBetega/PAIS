@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pontos Turísticos do Mundo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        .erro {
+            color: #dc3545;
+            margin-top: 10px;
+        }
+        .ponto-turistico {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .ponto-turistico img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Pontos Turísticos do Mundo</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Explorar Destinos Turísticos</h2>
+            </div>
+            <div class="card-body">
+                <p>Selecione a localização para descobrir pontos turísticos:</p>
+                
+                <!-- Seleção de Continente -->
+                <div class="form-group">
+                    <label for="estado">Continente:</label>
+                    <select class="form-control" id="estado" onchange="carregarMunicipios()">
+                        <option value="">Selecione um continente...</option>
+                    </select>
+                </div>
+
+                <!-- Seleção de País -->
+                <div class="form-group">
+                    <label for="municipio">País:</label>
+                    <select class="form-control" id="municipio" onchange="mostrarPontosTuristicos()">
+                        <option value="">Primeiro selecione um continente...</option>
+                    </select>
+                </div>
+
+                <div id="pontosTuristicos" class="resultado"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de dados simulada de pontos turísticos
+        const pontosTuristicosDB = {
+            'EUR': {
+                'França': [
+                    {
+                        nome: 'Torre Eiffel',
+                        descricao: 'Ícone mundial localizado em Paris, com 324 metros de altura.',
+                        imagem: 'https://example.com/eiffel.jpg'
+                    },
+                    {
+                        nome: 'Museu do Louvre',
+                        descricao: 'O maior museu de arte do mundo e lar da Mona Lisa.',
+                        imagem: 'https://example.com/louvre.jpg'
+                    }
+                ],
+                'Itália': [
+                    {
+                        nome: 'Coliseu',
+                        descricao: 'Anfiteatro histórico no centro de Roma.',
+                        imagem: 'https://example.com/coliseu.jpg'
+                    },
+                    {
+                        nome: 'Torre de Pisa',
+                        descricao: 'Famosa torre inclinada na Toscana.',
+                        imagem: 'https://example.com/pisa.jpg'
+                    }
+                ]
+            },
+            'ASI': {
+                'China': [
+                    {
+                        nome: 'Grande Muralha da China',
+                        descricao: 'Uma das maiores construções da humanidade.',
+                        imagem: 'https://example.com/muralha.jpg'
+                    },
+                    {
+                        nome: 'Cidade Proibida',
+                        descricao: 'Palácio imperial chinês em Pequim.',
+                        imagem: 'https://example.com/cidadeproibida.jpg'
+                    }
+                ]
+            }
+        };
+
+        async function carregarEstados() {
+            const selectEstado = document.getElementById('estado');
+            const continentes = [
+                {sigla: 'EUR', nome: 'Europa'},
+                {sigla: 'ASI', nome: 'Ásia'},
+                {sigla: 'AFR', nome: 'África'},
+                {sigla: 'AMN', nome: 'América do Norte'},
+                {sigla: 'AMS', nome: 'América do Sul'},
+                {sigla: 'OCE', nome: 'Oceania'}
+            ];
+            
+            continentes.forEach(continente => {
+                const option = document.createElement('option');
+                option.value = continente.sigla;
+                option.textContent = continente.nome;
+                selectEstado.appendChild(option);
+            });
+        }
+
+        async function carregarMunicipios() {
+            const selectEstado = document.getElementById('estado');
+            const selectMunicipio = document.getElementById('municipio');
+            const pontosTuristicos = document.getElementById('pontosTuristicos');
+            const continente = selectEstado.value;
+
+            pontosTuristicos.innerHTML = '';
+            selectMunicipio.innerHTML = '<option value="">Selecione um país...</option>';
+
+            if (!continente) {
+                selectMunicipio.innerHTML = '<option value="">Primeiro selecione um continente...</option>';
+                return;
+            }
+
+            // Simulação de países por continente
+            const paisesPorContinente = {
+                'EUR': ['França', 'Itália', 'Espanha', 'Alemanha'],
+                'ASI': ['China', 'Japão', 'Índia', 'Tailândia'],
+                'AFR': ['Egito', 'África do Sul', 'Marrocos', 'Quênia'],
+                'AMN': ['Estados Unidos', 'Canadá', 'México'],
+                'AMS': ['Brasil', 'Argentina', 'Peru', 'Chile'],
+                'OCE': ['Austrália', 'Nova Zelândia']
+            };
+
+            const paises = paisesPorContinente[continente] || [];
+            paises.sort();
+
+            paises.forEach(pais => {
+                const option = document.createElement('option');
+                option.value = pais;
+                option.textContent = pais;
+                selectMunicipio.appendChild(option);
+            });
+        }
+
+        function mostrarPontosTuristicos() {
+            const continente = document.getElementById('estado').value;
+            const pais = document.getElementById('municipio').value;
+            const divPontosTuristicos = document.getElementById('pontosTuristicos');
+
+            divPontosTuristicos.innerHTML = '';
+
+            if (!continente || !pais) return;
+
+            const pontos = pontosTuristicosDB[continente]?.[pais];
+
+            if (pontos && pontos.length > 0) {
+                divPontosTuristicos.innerHTML = `
+                    <h3>Pontos Turísticos em ${pais}</h3>
+                    ${pontos.map(ponto => `
+                        <div class="ponto-turistico">
+                            <h4>${ponto.nome}</h4>
+                            <p>${ponto.descricao}</p>
+                        </div>
+                    `).join('')}
+                `;
+            } else {
+                divPontosTuristicos.innerHTML = `
+                    <p>Desculpe, ainda não temos informações sobre pontos turísticos em ${pais}.</p>
+                    <p>Sugestões de busca: Tente França ou China para ver exemplos.</p>
+                `;
+            }
+        }
+
+        // Inicializar a página
+        window.onload = carregarEstados;
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
