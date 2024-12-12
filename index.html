@@ -50,17 +50,25 @@
                 
                 <!-- Seleção de Continente -->
                 <div class="form-group">
-                    <label for="estado">Continente:</label>
-                    <select class="form-control" id="estado" onchange="carregarMunicipios()">
+                    <label for="continente">Continente:</label>
+                    <select class="form-control" id="continente" onchange="carregarPaises()">
                         <option value="">Selecione um continente...</option>
                     </select>
                 </div>
 
                 <!-- Seleção de País -->
                 <div class="form-group">
-                    <label for="municipio">País:</label>
-                    <select class="form-control" id="municipio" onchange="mostrarPontosTuristicos()">
+                    <label for="pais">País:</label>
+                    <select class="form-control" id="pais" onchange="carregarCidades()">
                         <option value="">Primeiro selecione um continente...</option>
+                    </select>
+                </div>
+
+                <!-- Seleção de Cidade/Estado -->
+                <div class="form-group">
+                    <label for="cidade">Cidade/Estado:</label>
+                    <select class="form-control" id="cidade" onchange="mostrarPontosTuristicos()">
+                        <option value="">Primeiro selecione um país...</option>
                     </select>
                 </div>
 
@@ -73,49 +81,66 @@
         // Base de dados simulada de pontos turísticos
         const pontosTuristicosDB = {
             'EUR': {
-                'França': [
-                    {
-                        nome: 'Torre Eiffel',
-                        descricao: 'Ícone mundial localizado em Paris, com 324 metros de altura.',
-                        imagem: 'https://example.com/eiffel.jpg'
-                    },
-                    {
-                        nome: 'Museu do Louvre',
-                        descricao: 'O maior museu de arte do mundo e lar da Mona Lisa.',
-                        imagem: 'https://example.com/louvre.jpg'
-                    }
-                ],
-                'Itália': [
-                    {
-                        nome: 'Coliseu',
-                        descricao: 'Anfiteatro histórico no centro de Roma.',
-                        imagem: 'https://example.com/coliseu.jpg'
-                    },
-                    {
-                        nome: 'Torre de Pisa',
-                        descricao: 'Famosa torre inclinada na Toscana.',
-                        imagem: 'https://example.com/pisa.jpg'
-                    }
-                ]
+                'França': {
+                    'Paris': [
+                        {
+                            nome: 'Torre Eiffel',
+                            descricao: 'Ícone mundial com 324 metros de altura.',
+                            imagem: 'https://example.com/eiffel.jpg'
+                        },
+                        {
+                            nome: 'Museu do Louvre',
+                            descricao: 'O maior museu de arte do mundo e lar da Mona Lisa.',
+                            imagem: 'https://example.com/louvre.jpg'
+                        }
+                    ],
+                    'Nice': [
+                        {
+                            nome: 'Promenade des Anglais',
+                            descricao: 'Famoso calçadão à beira-mar.',
+                            imagem: 'https://example.com/nice.jpg'
+                        }
+                    ]
+                },
+                'Itália': {
+                    'Roma': [
+                        {
+                            nome: 'Coliseu',
+                            descricao: 'Anfiteatro histórico no centro de Roma.',
+                            imagem: 'https://example.com/coliseu.jpg'
+                        }
+                    ],
+                    'Pisa': [
+                        {
+                            nome: 'Torre de Pisa',
+                            descricao: 'Famosa torre inclinada na Toscana.',
+                            imagem: 'https://example.com/pisa.jpg'
+                        }
+                    ]
+                }
             },
             'ASI': {
-                'China': [
-                    {
-                        nome: 'Grande Muralha da China',
-                        descricao: 'Uma das maiores construções da humanidade.',
-                        imagem: 'https://example.com/muralha.jpg'
-                    },
-                    {
-                        nome: 'Cidade Proibida',
-                        descricao: 'Palácio imperial chinês em Pequim.',
-                        imagem: 'https://example.com/cidadeproibida.jpg'
-                    }
-                ]
+                'China': {
+                    'Pequim': [
+                        {
+                            nome: 'Cidade Proibida',
+                            descricao: 'Palácio imperial chinês.',
+                            imagem: 'https://example.com/cidadeproibida.jpg'
+                        }
+                    ],
+                    'Mutianyu': [
+                        {
+                            nome: 'Grande Muralha da China',
+                            descricao: 'Uma das maiores construções da humanidade.',
+                            imagem: 'https://example.com/muralha.jpg'
+                        }
+                    ]
+                }
             }
         };
 
         async function carregarEstados() {
-            const selectEstado = document.getElementById('estado');
+            const selectContinente = document.getElementById('continente');
             const continentes = [
                 {sigla: 'EUR', nome: 'Europa'},
                 {sigla: 'ASI', nome: 'Ásia'},
@@ -129,25 +154,26 @@
                 const option = document.createElement('option');
                 option.value = continente.sigla;
                 option.textContent = continente.nome;
-                selectEstado.appendChild(option);
+                selectContinente.appendChild(option);
             });
         }
 
-        async function carregarMunicipios() {
-            const selectEstado = document.getElementById('estado');
-            const selectMunicipio = document.getElementById('municipio');
+        async function carregarPaises() {
+            const selectContinente = document.getElementById('continente');
+            const selectPais = document.getElementById('pais');
+            const selectCidade = document.getElementById('cidade');
             const pontosTuristicos = document.getElementById('pontosTuristicos');
-            const continente = selectEstado.value;
+            const continente = selectContinente.value;
 
             pontosTuristicos.innerHTML = '';
-            selectMunicipio.innerHTML = '<option value="">Selecione um país...</option>';
+            selectPais.innerHTML = '<option value="">Selecione um país...</option>';
+            selectCidade.innerHTML = '<option value="">Primeiro selecione um país...</option>';
 
             if (!continente) {
-                selectMunicipio.innerHTML = '<option value="">Primeiro selecione um continente...</option>';
+                selectPais.innerHTML = '<option value="">Primeiro selecione um continente...</option>';
                 return;
             }
 
-            // Simulação de países por continente
             const paisesPorContinente = {
                 'EUR': ['França', 'Itália', 'Espanha', 'Alemanha'],
                 'ASI': ['China', 'Japão', 'Índia', 'Tailândia'],
@@ -164,24 +190,51 @@
                 const option = document.createElement('option');
                 option.value = pais;
                 option.textContent = pais;
-                selectMunicipio.appendChild(option);
+                selectPais.appendChild(option);
+            });
+        }
+
+        async function carregarCidades() {
+            const continente = document.getElementById('continente').value;
+            const pais = document.getElementById('pais').value;
+            const selectCidade = document.getElementById('cidade');
+            const pontosTuristicos = document.getElementById('pontosTuristicos');
+
+            pontosTuristicos.innerHTML = '';
+            selectCidade.innerHTML = '<option value="">Selecione uma cidade/estado...</option>';
+
+            if (!pais) {
+                selectCidade.innerHTML = '<option value="">Primeiro selecione um país...</option>';
+                return;
+            }
+
+            const cidadesDisponiveis = pontosTuristicosDB[continente]?.[pais] || {};
+            const cidades = Object.keys(cidadesDisponiveis);
+            cidades.sort();
+
+            cidades.forEach(cidade => {
+                const option = document.createElement('option');
+                option.value = cidade;
+                option.textContent = cidade;
+                selectCidade.appendChild(option);
             });
         }
 
         function mostrarPontosTuristicos() {
-            const continente = document.getElementById('estado').value;
-            const pais = document.getElementById('municipio').value;
+            const continente = document.getElementById('continente').value;
+            const pais = document.getElementById('pais').value;
+            const cidade = document.getElementById('cidade').value;
             const divPontosTuristicos = document.getElementById('pontosTuristicos');
 
             divPontosTuristicos.innerHTML = '';
 
-            if (!continente || !pais) return;
+            if (!continente || !pais || !cidade) return;
 
-            const pontos = pontosTuristicosDB[continente]?.[pais];
+            const pontos = pontosTuristicosDB[continente]?.[pais]?.[cidade];
 
             if (pontos && pontos.length > 0) {
                 divPontosTuristicos.innerHTML = `
-                    <h3>Pontos Turísticos em ${pais}</h3>
+                    <h3>Pontos Turísticos em ${cidade}, ${pais}</h3>
                     ${pontos.map(ponto => `
                         <div class="ponto-turistico">
                             <h4>${ponto.nome}</h4>
@@ -191,8 +244,8 @@
                 `;
             } else {
                 divPontosTuristicos.innerHTML = `
-                    <p>Desculpe, ainda não temos informações sobre pontos turísticos em ${pais}.</p>
-                    <p>Sugestões de busca: Tente França ou China para ver exemplos.</p>
+                    <p>Desculpe, ainda não temos informações sobre pontos turísticos em ${cidade}, ${pais}.</p>
+                    <p>Sugestões de busca: Tente Paris (França) ou Pequim (China) para ver exemplos.</p>
                 `;
             }
         }
