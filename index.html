@@ -85,13 +85,23 @@
                     'Paris': [
                         {
                             nome: 'Torre Eiffel',
-                            descricao: 'Ícone mundial com 324 metros de altura.',
+                            descricao: 'Ícone mundial com 324 metros de altura, oferece vista panorâmica da cidade.',
                             imagem: 'https://example.com/eiffel.jpg'
                         },
                         {
                             nome: 'Museu do Louvre',
                             descricao: 'O maior museu de arte do mundo e lar da Mona Lisa.',
                             imagem: 'https://example.com/louvre.jpg'
+                        },
+                        {
+                            nome: 'Arco do Triunfo',
+                            descricao: 'Monumento histórico que homenageia os que lutaram pela França.',
+                            imagem: 'https://example.com/arcotriunfo.jpg'
+                        },
+                        {
+                            nome: 'Notre-Dame',
+                            descricao: 'Catedral histórica em estilo gótico do século XII.',
+                            imagem: 'https://example.com/notredame.jpg'
                         }
                     ],
                     'Nice': [
@@ -99,6 +109,23 @@
                             nome: 'Promenade des Anglais',
                             descricao: 'Famoso calçadão à beira-mar.',
                             imagem: 'https://example.com/nice.jpg'
+                        },
+                        {
+                            nome: 'Vieux Nice',
+                            descricao: 'Centro histórico com arquitetura italiana e mercados locais.',
+                            imagem: 'https://example.com/vieuxnice.jpg'
+                        }
+                    ],
+                    'Lyon': [
+                        {
+                            nome: 'Basílica de Notre-Dame de Fourvière',
+                            descricao: 'Impressionante basílica com vista para toda a cidade.',
+                            imagem: 'https://example.com/fourviere.jpg'
+                        },
+                        {
+                            nome: 'Vieux Lyon',
+                            descricao: 'Bairro medieval com arquitetura renascentista.',
+                            imagem: 'https://example.com/vieuxlyon.jpg'
                         }
                     ]
                 },
@@ -108,13 +135,40 @@
                             nome: 'Coliseu',
                             descricao: 'Anfiteatro histórico no centro de Roma.',
                             imagem: 'https://example.com/coliseu.jpg'
+                        },
+                        {
+                            nome: 'Vaticano',
+                            descricao: 'Sede da Igreja Católica e lar de importantes obras de arte.',
+                            imagem: 'https://example.com/vaticano.jpg'
+                        },
+                        {
+                            nome: 'Fontana di Trevi',
+                            descricao: 'A maior fonte barroca de Roma.',
+                            imagem: 'https://example.com/trevi.jpg'
                         }
                     ],
-                    'Pisa': [
+                    'Veneza': [
                         {
-                            nome: 'Torre de Pisa',
-                            descricao: 'Famosa torre inclinada na Toscana.',
-                            imagem: 'https://example.com/pisa.jpg'
+                            nome: 'Praça São Marcos',
+                            descricao: 'Principal praça de Veneza com a Basílica de São Marcos.',
+                            imagem: 'https://example.com/sanmarco.jpg'
+                        },
+                        {
+                            nome: 'Grande Canal',
+                            descricao: 'Principal canal de Veneza com gôndolas tradicionais.',
+                            imagem: 'https://example.com/canal.jpg'
+                        }
+                    ],
+                    'Florença': [
+                        {
+                            nome: 'Duomo',
+                            descricao: 'Catedral com sua famosa cúpula vermelha.',
+                            imagem: 'https://example.com/duomo.jpg'
+                        },
+                        {
+                            nome: 'Galeria Uffizi',
+                            descricao: 'Um dos museus de arte mais importantes do mundo.',
+                            imagem: 'https://example.com/uffizi.jpg'
                         }
                     ]
                 }
@@ -124,15 +178,68 @@
                     'Pequim': [
                         {
                             nome: 'Cidade Proibida',
-                            descricao: 'Palácio imperial chinês.',
+                            descricao: 'Palácio imperial chinês com 9.999 cômodos.',
                             imagem: 'https://example.com/cidadeproibida.jpg'
+                        },
+                        {
+                            nome: 'Templo do Céu',
+                            descricao: 'Complexo de templos imperiais da dinastia Ming.',
+                            imagem: 'https://example.com/templodoceu.jpg'
+                        },
+                        {
+                            nome: 'Praça da Paz Celestial',
+                            descricao: 'Maior praça pública do mundo.',
+                            imagem: 'https://example.com/pracapaz.jpg'
                         }
                     ],
-                    'Mutianyu': [
+                    'Xangai': [
                         {
-                            nome: 'Grande Muralha da China',
-                            descricao: 'Uma das maiores construções da humanidade.',
-                            imagem: 'https://example.com/muralha.jpg'
+                            nome: 'The Bund',
+                            descricao: 'Famoso calçadão à beira do rio com vista para arranha-céus.',
+                            imagem: 'https://example.com/bund.jpg'
+                        },
+                        {
+                            nome: 'Torre de Pérola Oriental',
+                            descricao: 'Torre de TV com observatório e restaurante giratório.',
+                            imagem: 'https://example.com/perola.jpg'
+                        }
+                    ],
+                    'Xi\'an': [
+                        {
+                            nome: 'Exército de Terracota',
+                            descricao: 'Antiga coleção de guerreiros e cavalos em terracota.',
+                            imagem: 'https://example.com/terracota.jpg'
+                        },
+                        {
+                            nome: 'Muralha da Cidade Antiga',
+                            descricao: 'Muralha histórica bem preservada com 14km de extensão.',
+                            imagem: 'https://example.com/muralhaxi.jpg'
+                        }
+                    ]
+                },
+                'Japão': {
+                    'Tóquio': [
+                        {
+                            nome: 'Torre de Tóquio',
+                            descricao: 'Torre de comunicação e observação inspirada na Torre Eiffel.',
+                            imagem: 'https://example.com/tokyotower.jpg'
+                        },
+                        {
+                            nome: 'Templo Senso-ji',
+                            descricao: 'O templo budista mais antigo de Tóquio.',
+                            imagem: 'https://example.com/sensoji.jpg'
+                        }
+                    ],
+                    'Quioto': [
+                        {
+                            nome: 'Templo Dourado',
+                            descricao: 'Pavilhão coberto com folhas de ouro puro.',
+                            imagem: 'https://example.com/kinkakuji.jpg'
+                        },
+                        {
+                            nome: 'Floresta de Bambu de Arashiyama',
+                            descricao: 'Famosa floresta de bambu com trilhas para caminhada.',
+                            imagem: 'https://example.com/bamboo.jpg'
                         }
                     ]
                 }
@@ -175,12 +282,12 @@
             }
 
             const paisesPorContinente = {
-                'EUR': ['França', 'Itália', 'Espanha', 'Alemanha'],
-                'ASI': ['China', 'Japão', 'Índia', 'Tailândia'],
-                'AFR': ['Egito', 'África do Sul', 'Marrocos', 'Quênia'],
-                'AMN': ['Estados Unidos', 'Canadá', 'México'],
-                'AMS': ['Brasil', 'Argentina', 'Peru', 'Chile'],
-                'OCE': ['Austrália', 'Nova Zelândia']
+                'EUR': ['França', 'Itália', 'Espanha', 'Alemanha', 'Portugal', 'Grécia', 'Reino Unido', 'Holanda'],
+                'ASI': ['China', 'Japão', 'Índia', 'Tailândia', 'Vietnã', 'Coreia do Sul', 'Singapura', 'Malásia'],
+                'AFR': ['Egito', 'África do Sul', 'Marrocos', 'Quênia', 'Tanzânia', 'Namíbia', 'Botsuana'],
+                'AMN': ['Estados Unidos', 'Canadá', 'México', 'Costa Rica', 'Cuba', 'Jamaica'],
+                'AMS': ['Brasil', 'Argentina', 'Peru', 'Chile', 'Colômbia', 'Equador', 'Uruguai'],
+                'OCE': ['Austrália', 'Nova Zelândia', 'Fiji', 'Polinésia Francesa']
             };
 
             const paises = paisesPorContinente[continente] || [];
@@ -245,7 +352,7 @@
             } else {
                 divPontosTuristicos.innerHTML = `
                     <p>Desculpe, ainda não temos informações sobre pontos turísticos em ${cidade}, ${pais}.</p>
-                    <p>Sugestões de busca: Tente Paris (França) ou Pequim (China) para ver exemplos.</p>
+                    <p>Sugestões de busca: Tente Paris (França), Roma (Itália) ou Tóquio (Japão) para ver exemplos.</p>
                 `;
             }
         }
